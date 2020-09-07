@@ -4,25 +4,14 @@ on: [push]
 
 jobs:
   build-chain:
-    strategy:
-      matrix:
-        java-version: [8]
-      fail-fast: false
     runs-on: ubuntu-latest
-    name: Maven Build
+    name: Maven Build (8)
     steps:
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: ${{ matrix.java-version }}
-      - name: Get some info
-        run:
-          shell: chmod +x ./get.sh && ./get.sh
-      - name: Build Chain ${{ matrix.java-version }}
+      - name: Build Chain
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v1.4
+        uses: kiegroup/github-action-build-chain@openjdk8
         with:
-          build-command: 'mvn -e -nsu -Dfull -Pwildfly install -Prun-code-coverage  -Dcontainer.profile=wildfly -Dcontainer=wildfly -Dintegration-tests=true -Dmaven.test.failure.ignore=true'
+          build-command: 'cat /proc/sys/net/ipv4/tcp_keepalive_time && cat /proc/sys/net/ipv4/tcp_keepalive_intvl && cat /proc/sys/net/ipv4/tcp_keepalive_probes'
           workflow-file-name: "pull_request.yml"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
